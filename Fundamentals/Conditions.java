@@ -65,6 +65,8 @@ public class Conditions {
             System.out.print("Enter password : ");
             User_Password = sc.nextLine();
         }while(!User_Username.equals(username) || !User_Password.equals(password));
+        
+        sc.close();
 
         System.out.println();
         //For loop
