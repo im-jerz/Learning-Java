@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.io.Console;
 import java.io.IOException;
+import java.security.Key;
 
 
 
@@ -31,6 +32,7 @@ public class Hangman {
             switch (choose) {
                 case 1:
                     Game.game();
+                    
                     break;
                 case 2:
                     Guide.g();
@@ -52,35 +54,61 @@ class Game{
     private static char[] CorrectAnswer;
     
     static void game(){
+        life = 7;
         String word = SecretWord();
         CorrectAnswer = new char[word.length()];
-        while(true){
+        System.out.println(CorrectAnswer.length);
+        boolean loop = true;
+        while(loop){
+            int g = 0;
+            for(int i =0; i<CorrectAnswer.length;i++){
+                if(CorrectAnswer[i] != '\u0000'){
+                    g++;
+                }
+            }
+            
             man();
+            if(life == 1){
+                System.out.println("You lose !!!");
+                loop = false;
+                System.out.println("Press any key to exit ...");
+                KeyInput.getKey();
+                break;
+            }
             blanks();
+            if(g==CorrectAnswer.length) {
+                System.out.println("You find the correct answer !!!");
+                loop = false;
+                System.out.print("Press y  to try again and Press any key to exit : ");
+                char yt = KeyInput.getKey();
+                if(Character.toLowerCase(yt) == 'y') game();
+                break;
+            }
             System.out.print("Guess a letter : ");
-            checker(word,UserInput.sc.next().charAt(0));
+            char ch =UserInput.sc.next().charAt(0);
+            checker(word, ch);
         }
     }
 
     static String checker(String SecWord,char value){
         char[] word = SecWord.toCharArray();
-        
-        for(int i =0; i<=word.length-1;i++){
-            if(word[i] == value){
-                CorrectAnswer[i] = value;
-            }else{
-                life--;
+        int flag = 0;
+        for(int i =0; i<word.length;i++){
+            if(Character.toLowerCase(word[i]) == Character.toLowerCase(value)){
+                CorrectAnswer[i] = Character.toUpperCase(value);
+                flag = 1;
             }
         }
+        if(flag ==0) life--;
         return null;
     }
 
     static void blanks(){
-        for(int i = 0; i<=CorrectAnswer.length-1;i++){
+        for(int i = 0; i<CorrectAnswer.length;i++){
             if(CorrectAnswer[i] == '\u0000'){
                 System.out.print("_ ");
             }else{
-                System.out.print(CorrectAnswer[i]+' ');
+                System.out.print(CorrectAnswer[i]+" ");
             }
         }
         System.out.print("\n");
@@ -91,7 +119,7 @@ class Game{
         System.out.printf("|	%c\n", (life == 7) ? ' ':'O');
         System.out.printf("|      %c%c%c\n",(life == 7 || life == 6) ? ' ':'\\', (life == 7) ? ' ':'|', (life <= 7&&life>=5) ? ' ':'/');
         System.out.printf("|       %c\n",(life <= 7&&life>=4) ? ' ':'|');
-        System.out.printf("|      %c %c\n",(life <= 7&&life>=3) ? ' ':'/',(life <= 7&&life>=1) ? ' ':'\\');
+        System.out.printf("|      %c %c\n",(life <= 7&&life>=3) ? ' ':'/',(life <= 7&&life>=2) ? ' ':'\\');
         System.out.println("|");
         System.out.println("|");
         System.out.println("|");
